@@ -1,0 +1,28 @@
+  # Backend TRWM
+
+API REST para gestión de jugadores y equipos.
+
+## Tecnologías
+- Node.js
+- Express
+- MongoDB
+- JWT
+- Swagger
+
+## Funcionalidades
+- CRUD Players
+- CRUD Teams
+- Autenticación JWT
+- Roles (ADMIN/USER)
+- API externa (API-Football)
+- Documentación Swagger
+
+## Uso
+npm install
+npm run dev
+
+## Seguridad
+Uso de JWT y control de roles
+
+## Arquitectura
+Modelo → Controlador → Rutas → App.js
