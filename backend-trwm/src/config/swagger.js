@@ -7,7 +7,7 @@ const options = {
         info: {
             title: 'API Proyecto Final - Backend TRWM',
             version: '1.0.0',
-            description: 'Proyecto final de DWSC y TRWM'
+            description: 'Marta Borrego Padilla'
         },
         servers: [
             {

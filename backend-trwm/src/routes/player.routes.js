@@ -1,15 +1,27 @@
 const express = require('express');
+
 const router = express.Router();
 
-const authMiddleware = require('../middlewares/auth.middleware');
-const checkRole = require('../middlewares/role.middleware');
-const playerController = require('../controllers/player.controller');
+const authMiddleware =
+    require('../middlewares/auth.middleware');
+
+const checkRole =
+    require('../middlewares/role.middleware');
+
+const playerController =
+    require('../controllers/player.controller');
 
 /**
  * @swagger
  * tags:
  *   name: Players
  *   description: Gestión de jugadores
+ */
+
+/**
+ * ==========================================
+ * RUTAS GENERALES
+ * ==========================================
  */
 
 /**
@@ -28,7 +40,10 @@ const playerController = require('../controllers/player.controller');
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/', authMiddleware, playerController.getPlayers);
+router.get(
+    '/',
+    playerController.getPlayers
+); // añadir luego authMiddleware
 
 /**
  * @swagger
@@ -92,7 +107,16 @@ router.get('/', authMiddleware, playerController.getPlayers);
  *       401:
  *         description: Token no proporcionado o no válido
  */
-router.post('/', authMiddleware, playerController.createPlayer);
+router.post(
+    '/',
+    playerController.createPlayer
+); // añadir luego authMiddleware
+
+/**
+ * ==========================================
+ * API EXTERNA
+ * ==========================================
+ */
 
 /**
  * @swagger
@@ -106,7 +130,44 @@ router.post('/', authMiddleware, playerController.createPlayer);
  *       500:
  *         description: Error al obtener datos de API externa
  */
-router.get('/external', playerController.getExternalPlayers);
+router.get(
+    '/external',
+    playerController.getExternalPlayers
+);
+
+/**
+ * @swagger
+ * /api/players/external/search/{name}:
+ *   get:
+ *     summary: Buscar jugadores externos por nombre
+ *     tags: [Players]
+ *     parameters:
+ *       - in: path
+ *         name: name
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Nombre del jugador
+ *       - in: query
+ *         name: season
+ *         schema:
+ *           type: string
+ *         example: 2023
+ *       - in: query
+ *         name: league
+ *         schema:
+ *           type: string
+ *         example: 140
+ *     responses:
+ *       200:
+ *         description: Jugadores encontrados correctamente
+ *       500:
+ *         description: Error al buscar jugadores externos
+ */
+router.get(
+    '/external/search/:name',
+    playerController.searchExternalPlayers
+);
 
 /**
  * @swagger
@@ -120,18 +181,33 @@ router.get('/external', playerController.getExternalPlayers);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID externo del jugador en la API Football
+ *         description: ID externo del jugador en API Football
+ *       - in: query
+ *         name: season
+ *         schema:
+ *           type: string
+ *         example: 2023
  *     responses:
  *       201:
  *         description: Jugador importado correctamente
  *       400:
- *         description: El jugador ya existe en la base de datos
+ *         description: El jugador ya existe
  *       404:
- *         description: Jugador no encontrado en API externa
+ *         description: Jugador no encontrado
  *       500:
- *         description: Error al importar jugador desde API externa
+ *         description: Error al importar jugador
  */
-router.post('/import/:playerId', playerController.importPlayerByExternalId);
+router.post(
+    '/import/:playerId',
+    playerController.importPlayerByExternalId
+);
+
+/**
+ * ==========================================
+ * RUTAS POR ID
+ * SIEMPRE AL FINAL
+ * ==========================================
+ */
 
 /**
  * @swagger
@@ -147,18 +223,19 @@ router.post('/import/:playerId', playerController.importPlayerByExternalId);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de MongoDB del jugador
+ *         description: ID MongoDB del jugador
  *     responses:
  *       200:
  *         description: Jugador obtenido correctamente
  *       400:
  *         description: ID no válido
- *       401:
- *         description: Token no proporcionado o no válido
  *       404:
  *         description: Jugador no encontrado
  */
-router.get('/:id', authMiddleware, playerController.getPlayerById);
+router.get(
+    '/:id',
+    playerController.getPlayerById
+); // añadir luego authMiddleware
 
 /**
  * @swagger
@@ -174,42 +251,19 @@ router.get('/:id', authMiddleware, playerController.getPlayerById);
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de MongoDB del jugador
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               nombre:
- *                 type: string
- *                 example: "Messi actualizado"
- *               equipo:
- *                 type: string
- *                 example: "Inter Miami"
- *               liga:
- *                 type: string
- *                 example: "MLS"
- *               edad:
- *                 type: number
- *                 example: 37
- *               posicion:
- *                 type: string
- *                 example: "Attacker"
+ *         description: ID MongoDB del jugador
  *     responses:
  *       200:
  *         description: Jugador actualizado correctamente
  *       400:
- *         description: Error al actualizar jugador
- *       401:
- *         description: Token no proporcionado o no válido
- *       403:
- *         description: No tienes permisos para realizar esta acción
+ *         description: Error de validación
  *       404:
  *         description: Jugador no encontrado
  */
-router.put('/:id', authMiddleware, checkRole('ADMIN'), playerController.updatePlayer);
+router.put(
+    '/:id',
+    playerController.updatePlayer
+); // añadir luego authMiddleware
 
 /**
  * @swagger
@@ -225,19 +279,16 @@ router.put('/:id', authMiddleware, checkRole('ADMIN'), playerController.updatePl
  *         required: true
  *         schema:
  *           type: string
- *         description: ID de MongoDB del jugador
+ *         description: ID MongoDB del jugador
  *     responses:
  *       200:
  *         description: Jugador eliminado correctamente
- *       400:
- *         description: ID no válido
- *       401:
- *         description: Token no proporcionado o no válido
- *       403:
- *         description: No tienes permisos para realizar esta acción
  *       404:
  *         description: Jugador no encontrado
  */
-router.delete('/:id', authMiddleware, checkRole('ADMIN'), playerController.deletePlayer);
+router.delete(
+    '/:id',
+    playerController.deletePlayer
+); // añadir luego authMiddleware
 
 module.exports = router;
