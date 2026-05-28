@@ -79,7 +79,12 @@ const login = async (req, res) => {
 
         res.status(200).json({
             mensaje: 'Login correcto',
-            token
+            token,
+            role: user.rol,
+             usuario: {
+             nombre: user.nombre,
+            email: user.email
+    }
         });
 
     } catch (error) {

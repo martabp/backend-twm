@@ -81,20 +81,7 @@ const playerSchema = new mongoose.Schema({
     },
     posicion: {
         type: String,
-        trim: true,
-        enum: {
-            values: [
-                'Goalkeeper',
-                'Defender',
-                'Midfielder',
-                'Attacker',
-                'Portero',
-                'Defensa',
-                'Centrocampista',
-                'Delantero'
-            ],
-            message: 'La posición no es válida'
-        }
+        trim: true
     },
     imagen: {
         type: String,
@@ -109,21 +96,19 @@ const playerSchema = new mongoose.Schema({
         enum: {
             values: ['MANUAL', 'API_FOOTBALL'],
             message: 'El origen debe ser MANUAL o API_FOOTBALL'
-        },
-        required: [true, 'El origen del jugador es obligatorio']
+        }
     },
     geolocalizacion: {
-        type: geolocationSchema,
-        required: [true, 'La geolocalización del jugador es obligatoria']
+        type: geolocationSchema
     },
     comentarios: {
         type: [commentSchema],
         default: []
     },
     team: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Team'
-},
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Team'
+    }
 });
 
 module.exports = mongoose.model('Player', playerSchema);

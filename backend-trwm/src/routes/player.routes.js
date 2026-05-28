@@ -1,15 +1,8 @@
 const express = require('express');
-
 const router = express.Router();
-
-const authMiddleware =
-    require('../middlewares/auth.middleware');
-
-const checkRole =
-    require('../middlewares/role.middleware');
-
-const playerController =
-    require('../controllers/player.controller');
+const authMiddleware = require('../middlewares/auth.middleware');
+const checkRole = require('../middlewares/role.middleware');
+const playerController = require('../controllers/player.controller');
 
 /**
  * @swagger
@@ -26,7 +19,7 @@ const playerController =
 
 /**
  * @swagger
- * /api/players:
+ * /api/jugadores:
  *   get:
  *     summary: Obtener todos los jugadores
  *     tags: [Players]
@@ -40,10 +33,7 @@ const playerController =
  *       500:
  *         description: Error interno del servidor
  */
-router.get(
-    '/',
-    playerController.getPlayers
-); // añadir luego authMiddleware
+router.get('/',playerController.getPlayers); // abierto a cualquier usuario con o sin loguear
 
 /**
  * @swagger
@@ -107,10 +97,7 @@ router.get(
  *       401:
  *         description: Token no proporcionado o no válido
  */
-router.post(
-    '/',
-    playerController.createPlayer
-); // añadir luego authMiddleware
+router.post('/',authMiddleware, playerController.createPlayer); // Crear usuario
 
 /**
  * ==========================================
@@ -130,10 +117,7 @@ router.post(
  *       500:
  *         description: Error al obtener datos de API externa
  */
-router.get(
-    '/external',
-    playerController.getExternalPlayers
-);
+router.get('/external',playerController.getExternalPlayers);
 
 /**
  * @swagger
@@ -164,10 +148,7 @@ router.get(
  *       500:
  *         description: Error al buscar jugadores externos
  */
-router.get(
-    '/external/search/:name',
-    playerController.searchExternalPlayers
-);
+router.get( '/external/search/:name', playerController.searchExternalPlayers);
 
 /**
  * @swagger
@@ -197,10 +178,7 @@ router.get(
  *       500:
  *         description: Error al importar jugador
  */
-router.post(
-    '/import/:playerId',
-    playerController.importPlayerByExternalId
-);
+router.post( '/import/:playerId',authMiddleware,playerController.importPlayerByExternalId);
 
 /**
  * ==========================================
@@ -232,10 +210,7 @@ router.post(
  *       404:
  *         description: Jugador no encontrado
  */
-router.get(
-    '/:id',
-    playerController.getPlayerById
-); // añadir luego authMiddleware
+router.get('/:id',authMiddleware,playerController.getPlayerById); 
 
 /**
  * @swagger
@@ -260,10 +235,7 @@ router.get(
  *       404:
  *         description: Jugador no encontrado
  */
-router.put(
-    '/:id',
-    playerController.updatePlayer
-); // añadir luego authMiddleware
+router.put( '/:id',authMiddleware,checkRole('ADMIN'),playerController.updatePlayer);  
 
 /**
  * @swagger
@@ -286,9 +258,6 @@ router.put(
  *       404:
  *         description: Jugador no encontrado
  */
-router.delete(
-    '/:id',
-    playerController.deletePlayer
-); // añadir luego authMiddleware
+router.delete('/:id',authMiddleware,checkRole('ADMIN'),playerController.deletePlayer); 
 
 module.exports = router;
